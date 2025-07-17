@@ -1,9 +1,14 @@
-import { Contact } from "../db/models/Contact.js";
+import mongoose from 'mongoose';
+import { Contact } from '../db/models/Contact.js';
 
 export async function getAllContacts() {
   return await Contact.find();
 }
 
 export async function getContactById(contactId) {
+  if (!mongoose.Types.ObjectId.isValid(contactId)) {
+    return null;
+  }
+
   return await Contact.findById(contactId);
 }
