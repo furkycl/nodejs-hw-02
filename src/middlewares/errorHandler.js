@@ -1,9 +1,12 @@
-export default function errorHandler(err, req, res, next) {
-  console.error('❌', err.message);
-
-  res.status(err.status || 500).json({
-    status: err.status || 500,
-    message: err.message || 'Something went wrong',
-    data: err.name,
+const errorHandler = (err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || 'Something went wrong';
+  console.error(err);
+  res.status(status).json({
+    status,
+    message,
+    data: err.data,
   });
-}
+};
+
+export default errorHandler;
