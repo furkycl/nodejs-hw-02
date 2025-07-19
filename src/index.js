@@ -1,19 +1,22 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
+import app from './server.js';
+import { initMongoConnection } from './db/initMongoConnection.js';
+
 dotenv.config();
 
-import { setupServer } from "./server.js";
-import { initMongoConnection } from "./db/initMongoConnection.js";
+const PORT = process.env.PORT || 3000;
 
-async function start() {
+const startServer = async () => {
   try {
-    console.log("Starting Mongo connection...");
     await initMongoConnection();
-    console.log("Mongo connected, starting server...");
-    setupServer();
+
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
   } catch (error) {
-    console.error("Error during startup:", error);
+    console.error('Failed to start server:', error);
     process.exit(1);
   }
-}
+};
 
-start();
+startServer();
