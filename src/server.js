@@ -1,26 +1,33 @@
-import express from "express";
-import cors from "cors";
-import pino from "pino-http";
-import {
-  handleGetContacts,
-  handleGetContactById,
-} from "./controllers/contactsController.js";
+import express from 'express';
+import cors from 'cors';
+import pino from 'pino-http';
 
-export function setupServer() {
-  const app = express();
+import contactsRouter from './routers/contactsRouter.js';
+import errorHandler from './middlewares/errorHandler.js';
+import notFoundHandler from './middlewares/notFoundHandler.js';
 
-  app.use(cors());
-  app.use(pino());
+const app = express();
 
-  app.get("/contacts", handleGetContacts);
-  app.get("/contacts/:contactId", handleGetContactById);
-
-  app.use("*", (req, res) => {
-    res.status(404).json({ message: "Not found" });
+app.use(cors());
+app.use(express.json());
+app.use(
+  pino({
+    transport: {
+      target: 'pino-pretty',
+    },
+  })
+);
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to the Contacts API!',
+    status: 'API is running successfully.',
+    documentation:
+      'Please refer to the project documentation for available endpoints.',
   });
+});
+app.use('/api/contacts', contactsRouter);
 
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+export default app;
