@@ -17,7 +17,14 @@ app.use(
     },
   })
 );
-
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to the Contacts API!',
+    status: 'API is running successfully.',
+    documentation:
+      'Please refer to the project documentation for available endpoints.',
+  });
+});
 app.use('/api/contacts', contactsRouter);
 
 app.use(notFoundHandler);
