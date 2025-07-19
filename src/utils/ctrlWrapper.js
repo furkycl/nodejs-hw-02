@@ -1,4 +1,4 @@
-export default function ctrlWrapper(ctrl) {
+const ctrlWrapper = (ctrl) => {
   return async (req, res, next) => {
     try {
       await ctrl(req, res, next);
@@ -6,4 +6,6 @@ export default function ctrlWrapper(ctrl) {
       next(error);
     }
   };
-}
+};
+
+export default ctrlWrapper;
