@@ -15,7 +15,6 @@ export const registerUser = async (payload) => {
     ...payload,
     password: hashedPassword,
   });
-
   return newUser;
 };
 
@@ -24,36 +23,21 @@ export const loginUser = async (payload) => {
   if (!user) {
     throw createHttpError(401, 'Unauthorized');
   }
-
   const passwordMatch = await bcrypt.compare(payload.password, user.password);
   if (!passwordMatch) {
     throw createHttpError(401, 'Unauthorized');
   }
-
   await Session.deleteOne({ userId: user._id });
-
   const accessToken = jwt.sign(
-    {
-      userId: user._id,
-      email: user.email,
-    },
+    { userId: user._id, email: user.email },
     process.env.JWT_SECRET,
-    {
-      expiresIn: '15m',
-    }
+    { expiresIn: '15m' }
   );
-
   const refreshToken = jwt.sign(
-    {
-      userId: user._id,
-      email: user.email,
-    },
+    { userId: user._id, email: user.email },
     process.env.JWT_SECRET,
-    {
-      expiresIn: '30d',
-    }
+    { expiresIn: '30d' }
   );
-
   const newSession = await Session.create({
     userId: user._id,
     accessToken,
@@ -61,9 +45,53 @@ export const loginUser = async (payload) => {
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
     refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAYS),
   });
+  return { ...newSession.toObject(), accessToken };
+};
+
+export const refreshSession = async ({ refreshToken }) => {
+  const session = await Session.findOne({ refreshToken });
+  if (!session) {
+    throw createHttpError(401, 'Session not found');
+  }
+
+  const isRefreshTokenExpired =
+    new Date() > new Date(session.refreshTokenValidUntil);
+  if (isRefreshTokenExpired) {
+    throw createHttpError(401, 'Refresh token expired');
+  }
+
+  const user = await User.findById(session.userId);
+  if (!user) {
+    throw createHttpError(401, 'User associated with this session not found');
+  }
+
+  await Session.deleteOne({ _id: session._id });
+
+  const newAccessToken = jwt.sign(
+    { userId: user._id, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: '15m' }
+  );
+  const newRefreshToken = jwt.sign(
+    { userId: user._id, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: '30d' }
+  );
+
+  const newSession = await Session.create({
+    userId: user._id,
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+    refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAYS),
+  });
 
   return {
     ...newSession.toObject(),
-    accessToken,
+    accessToken: newAccessToken,
   };
+};
+
+export const logoutUser = async (refreshToken) => {
+  await Session.deleteOne({ refreshToken });
 };
