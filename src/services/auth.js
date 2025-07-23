@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { User } from '../db/models/User.js';
 import { Session } from '../db/models/Session.js';
 import { FIFTEEN_MINUTES, THIRTY_DAYS } from '../constants/index.js';
+import { sendEmail } from '../utils/sendEmail.js';
 
 export const registerUser = async (payload) => {
   const user = await User.findOne({ email: payload.email });
@@ -94,4 +95,30 @@ export const refreshSession = async ({ refreshToken }) => {
 
 export const logoutUser = async (refreshToken) => {
   await Session.deleteOne({ refreshToken });
+};
+
+export const sendResetEmail = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found!');
+  }
+  const resetToken = jwt.sign(
+    { userId: user._id, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: '5m' }
+  );
+  const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${resetToken}`;
+  try {
+    await sendEmail({
+      to: email,
+      subject: 'Reset your password',
+      html: `<p>Hello ${user.name},</p><p>To reset your password, please click on the link below:</p><a href="${resetLink}">Reset Password</a><p>This link will expire in 5 minutes.</p>`,
+    });
+  } catch (err) {
+    console.error(err);
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.'
+    );
+  }
 };
