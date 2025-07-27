@@ -1,19 +1,25 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: <uygulamanızın adı>
+  title: Contacts API
   license:
     name: Apache 2.0
-    url: <http://www.apache.org/licenses/LICENSE-2.0.html>
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: >
-    <uygulamanızın açıklaması>
+    Kişisel bir kişi rehberini yönetmek için kullanılan bir API. # 3. Açıklama eklendi
+    Kullanıcı kimlik doğrulaması, kişi ekleme, silme, güncelleme ve
+    listeleme işlemlerini destekler.
 tags:
-  # kullanacağınız etiketler
+  - name: Contacts
+    description: Kişilerle ilgili işlemler
+  - name: Auth
+    description: Kimlik doğrulama ile ilgili işlemler
 servers:
-  - url: <http://localhost:3000>
-  - url: #yayınlanmış siteye bağlantı
+  - url: http://localhost:3000
+    description: Yerel geliştirme sunucusu
+  - url: https://your-project-name.onrender.com
+    description: Yayın sunucusu (Render.com)
 paths:
-  # burada uç noktaların bağlantıları olacak
 components:
   securitySchemes:
     bearerAuth:
