@@ -20,6 +20,9 @@ servers:
   - url: https://your-project-name.onrender.com
     description: Yayın sunucusu (Render.com)
 paths:
+  '/contacts/{contactId}':
+    get:
+      $ref: ../swagger/paths/contacts/{contactId}/get.yaml
 components:
   securitySchemes:
     bearerAuth:
