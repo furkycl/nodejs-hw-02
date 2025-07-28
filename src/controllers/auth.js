@@ -4,6 +4,7 @@ import {
   refreshSession,
   logoutUser,
   sendResetEmail,
+  resetPassword,
 } from '../services/auth.js';
 import { THIRTY_DAYS } from '../constants/index.js';
 
