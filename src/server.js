@@ -1,3 +1,6 @@
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
+import path from 'path';
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
@@ -32,6 +35,12 @@ app.get('/', (req, res) => {
 
 app.use('/api/contacts', contactsRouter);
 app.use('/api/auth', authRouter);
+
+const swaggerDocumentPath = path.resolve(process.cwd(), 'docs', 'swagger.json');
+const swaggerDocument = JSON.parse(
+  fs.readFileSync(swaggerDocumentPath, 'utf8')
+);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(notFoundHandler);
 app.use(errorHandler);

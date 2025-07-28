@@ -1,0 +1,41 @@
+tags:
+  - Contacts
+summary: Get all contacts
+operationId: getContacts
+description: Retrieves a paginated list of all contacts for the authenticated user.
+security:
+  - bearerAuth: []
+parameters:
+  - name: page
+    in: query
+    description: The page number to retrieve.
+    schema:
+      type: integer
+      default: 1
+  - name: limit
+    in: query
+    description: The number of items to return per page.
+    schema:
+      type: integer
+      default: 10
+  - name: favorite
+    in: query
+    description: Filter contacts by their favorite status.
+    schema:
+      type: boolean
+responses:
+  '200':
+    description: A list of contacts.
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+              name:
+                type: string
+              email:
+                type: string

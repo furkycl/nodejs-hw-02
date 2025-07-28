@@ -1,0 +1,46 @@
+tags:
+  - Contacts
+summary: Create a new contact
+operationId: createContact
+description: Adds a new contact to the user's contact list. A photo can be uploaded as well.
+security:
+  - bearerAuth: []
+requestBody:
+  description: The contact object that needs to be added to the address book.
+  required: true
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - name
+          - email
+          - phone
+        properties:
+          name:
+            type: string
+            example: 'John Doe'
+          email:
+            type: string
+            format: email
+            example: 'john.doe@example.com'
+          phone:
+            type: string
+            example: '(123) 456-7890'
+          photo:
+            type: string
+            format: binary
+            description: The contact's profile picture file to upload.
+responses:
+  '201':
+    description: Contact created successfully.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 'Successfully created a contact!'
+  '400':
+    description: Bad Request. Invalid data provided.
