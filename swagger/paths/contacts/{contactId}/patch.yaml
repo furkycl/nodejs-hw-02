@@ -1,0 +1,51 @@
+tags:
+  - Contacts
+summary: Update an existing contact
+operationId: updateContact
+description: Updates one or more fields of an existing contact by their ID.
+security:
+  - bearerAuth: []
+parameters:
+  - name: contactId
+    in: path
+    description: The unique identifier of the contact to update.
+    required: true
+    schema:
+      type: string
+      example: '6884ef5629900d0242c97e58'
+requestBody:
+  description: The fields of the contact to update.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            example: 'Jane Doe Updated'
+          email:
+            type: string
+            format: email
+            example: 'jane.doe.updated@example.com'
+          phone:
+            type: string
+            example: '(987) 654-3210'
+responses:
+  '200':
+    description: Contact updated successfully.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+  '400':
+    description: Bad Request. Invalid data provided.
+  '404':
+    description: Not Found. The contact with the specified ID was not found.
