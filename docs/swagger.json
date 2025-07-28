@@ -15,7 +15,7 @@
       "description": "Yerel geliştirme sunucusu"
     },
     {
-      "url": null,
+      "url": "https://nodejs-swagger.onrender.com",
       "description": "Yayın sunucusu (Render.com)"
     }
   ],
