@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "Kişisel bir kişi rehberini yönetmek için kullanılan bir API. # 3. Açıklama eklendi Kullanıcı kimlik doğrulaması, kişi ekleme, silme, güncelleme ve listeleme işlemlerini destekler.\n"
+    "description": "Kişisel bir kişi rehberini yönetmek için kullanılan bir API. Kullanıcı kimlik doğrulaması, kişi ekleme, silme, güncelleme ve listeleme işlemlerini destekler.\n"
   },
   "servers": [
     {
@@ -15,7 +15,7 @@
       "description": "Yerel geliştirme sunucusu"
     },
     {
-      "url": "https://your-project-name.onrender.com",
+      "url": null,
       "description": "Yayın sunucusu (Render.com)"
     }
   ],
@@ -30,7 +30,7 @@
     }
   ],
   "paths": {
-    "/contacts": {
+    "/api/contacts": {
       "get": {
         "tags": [
           "Contacts"
@@ -169,7 +169,7 @@
         }
       }
     },
-    "/contacts/{contactId}": {
+    "/api/contacts/{contactId}": {
       "get": {
         "tags": [
           "Contacts"
